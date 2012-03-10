@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, MainActivity!</string>
+    <string name="app_name">CryDetector</string>
+    <string name="hits">Hits</string>
+    <string name="samples">Samples</string>
+    <string name="microphone">Microphone</string>
+    <string name="cry1">Cry 1</string>
+    <string name="cry2">Cry 2</string>
+    <string name="cry3">Cry 3</string>
+    <string name="cry4">Cry 4</string>
+    <string name="nocry1">NoCry 1</string>
+    <string name="nocry2">NoCry 2</string>
+    <string name="nocry3">NoCry 3</string>
+    <string name="nocry4">NoCry 4</string>
+    
+</resources>
