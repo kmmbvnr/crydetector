@@ -1,12 +1,16 @@
 package cc.wthr.crydetector;
 
+import cc.wthr.crydetector.CryDetector.ICryListener;
 import android.app.Activity;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener, ICryListener, OnCompletionListener {
     private Button mButtonCry1;
     private Button mButtonCry2;
     private Button mButtonCry3;
@@ -16,6 +20,8 @@ public class MainActivity extends Activity implements OnClickListener {
     private Button mButtonNocry3;
     private Button mButtonNocry4;
     private Button mButtonMic;
+    private CryDetector mCryDetector;
+	private MediaPlayer mPlayer;
 
 	/** Called when the activity is first created. */
     @Override
@@ -41,25 +47,65 @@ public class MainActivity extends Activity implements OnClickListener {
         mButtonNocry4.setOnClickListener(this);
         mButtonMic = (Button)findViewById(R.id.button_mic);
         mButtonMic.setOnClickListener(this);
+        
+        mCryDetector = new CryDetector();
+        mCryDetector.setCryListener(this);
     }
 
-	public void onClick(View view) {
-		if(view == mButtonCry1) {
+    public void onClick(View view) {
+		if(mPlayer != null) {
+	    	Log.d("MainActivity", "Release playing session");
+			onCompletion(mPlayer);
+		}
+		
+		if(view == mButtonMic) {
+			mCryDetector.link(0);
+		} else {
+			int soundId = R.raw.cry1;
 			
-		} else if(view == mButtonCry2) {
+			if(view == mButtonCry1) {
+				soundId = R.raw.cry1;
+			} else if(view == mButtonCry2) {
+				soundId = R.raw.cry2;			
+			} else if(view == mButtonCry3) {
+				soundId = R.raw.cry3;			
+			} else if(view == mButtonCry4) {
+				soundId = R.raw.cry4;			
+			} else if(view == mButtonNocry1) {
+				soundId = R.raw.nocry1;			
+			} else if(view == mButtonNocry2) {
+				soundId = R.raw.nocry2;			
+			} else if(view == mButtonNocry3) {
+				soundId = R.raw.nocry3;			
+			} else if(view == mButtonNocry4) {
+				soundId = R.raw.nocry4;			
+			}
 			
-		} else if(view == mButtonCry3) {
-			
-		} else if(view == mButtonCry4) {
-			
-		} else if(view == mButtonNocry1) {
-			
-		} else if(view == mButtonNocry2) {
-			
-		} else if(view == mButtonNocry3) {
-			
-		} else if(view == mButtonNocry4) {
-			
+			mPlayer = MediaPlayer.create(this, soundId);
+			mCryDetector.link(mPlayer.getAudioSessionId());
+			mPlayer.setOnCompletionListener(this);
+			mPlayer.start();
+		}
+	}
+
+	public void onCryReceived() {
+		Log.d("CRY", "Got it");
+	}
+	
+	public void onSampleReceived() {
+		
+	}
+
+	public synchronized void onCompletion(MediaPlayer mp) {
+		Log.d("MainActivity", "onCompletion");
+		try {
+			if(mPlayer != null) {
+				mPlayer = null;
+				mCryDetector.unlink();
+				mp.release();
+			}
+		} catch(Throwable e) {
+			Log.d("MainActivity", "onCompletion", e);
 		}
 	}
 }
