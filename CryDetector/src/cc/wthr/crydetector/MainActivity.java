@@ -5,10 +5,13 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener, ICryListener, OnCompletionListener {
     private Button mButtonCry1;
@@ -21,13 +24,21 @@ public class MainActivity extends Activity implements OnClickListener, ICryListe
     private Button mButtonNocry4;
     private Button mButtonMic;
     private CryDetector mCryDetector;
+    private int mTotalCries = 0;
+    private int mTotalSamples = 0;
 	private MediaPlayer mPlayer;
+	private Handler mUpdateUIHandler;
+	private TextView mHits;
+	private TextView mSamples;
 
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        mHits = (TextView)findViewById(R.id.hits);
+        mSamples = (TextView)findViewById(R.id.samples);
         
         mButtonCry1 = (Button)findViewById(R.id.button_cry1);
         mButtonCry1.setOnClickListener(this);
@@ -50,9 +61,20 @@ public class MainActivity extends Activity implements OnClickListener, ICryListe
         
         mCryDetector = new CryDetector();
         mCryDetector.setCryListener(this);
+        
+        mUpdateUIHandler = new Handler() {
+        	@Override
+        	public void handleMessage(Message msg) {
+        		mHits.setText(String.format("%d", mTotalCries));
+        		mSamples.setText(String.format("%d", mTotalSamples));
+        	}
+        };
     }
 
     public void onClick(View view) {
+    	mTotalCries = 0;
+    	mTotalSamples = 0;
+    	mUpdateUIHandler.sendEmptyMessage(0);
 		if(mPlayer != null) {
 	    	Log.d("MainActivity", "Release playing session");
 			onCompletion(mPlayer);
@@ -70,7 +92,7 @@ public class MainActivity extends Activity implements OnClickListener, ICryListe
 			} else if(view == mButtonCry3) {
 				soundId = R.raw.cry3;			
 			} else if(view == mButtonCry4) {
-				soundId = R.raw.cry4;			
+				soundId = R.raw.cry5;			
 			} else if(view == mButtonNocry1) {
 				soundId = R.raw.nocry1;			
 			} else if(view == mButtonNocry2) {
@@ -78,22 +100,29 @@ public class MainActivity extends Activity implements OnClickListener, ICryListe
 			} else if(view == mButtonNocry3) {
 				soundId = R.raw.nocry3;			
 			} else if(view == mButtonNocry4) {
-				soundId = R.raw.nocry4;			
+				soundId = R.raw.nocry5;			
 			}
 			
-			mPlayer = MediaPlayer.create(this, soundId);
-			mCryDetector.link(mPlayer.getAudioSessionId());
-			mPlayer.setOnCompletionListener(this);
-			mPlayer.start();
+			try { 
+				mPlayer = MediaPlayer.create(this, soundId);
+				mCryDetector.link(mPlayer.getAudioSessionId());
+				mPlayer.setOnCompletionListener(this);
+				mPlayer.start();
+			} catch(Throwable e) {
+				Log.d("MainActivity", "Link visualizer error", e);	
+			}
 		}
 	}
 
 	public void onCryReceived() {
-		Log.d("CRY", "Got it");
+		Log.d("CRY", "Got cry");
+		mTotalCries++;
+		mUpdateUIHandler.sendEmptyMessage(0);
 	}
 	
 	public void onSampleReceived() {
-		
+		mTotalSamples++;
+		mUpdateUIHandler.sendEmptyMessage(0);
 	}
 
 	public synchronized void onCompletion(MediaPlayer mp) {
@@ -102,6 +131,7 @@ public class MainActivity extends Activity implements OnClickListener, ICryListe
 			if(mPlayer != null) {
 				mPlayer = null;
 				mCryDetector.unlink();
+				mp.stop();
 				mp.release();
 			}
 		} catch(Throwable e) {

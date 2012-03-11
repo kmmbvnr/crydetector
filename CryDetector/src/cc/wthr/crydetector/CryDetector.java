@@ -101,14 +101,15 @@ public class CryDetector implements OnDataCaptureListener {
 		if(sample) {
 			mCryFilterCount ++;
 		}
+		
 		mCryFilter.offer(sample);
-		if(mCryFilter.size() > 4) {
+		if(mCryFilter.size() > 10) {
 			Boolean prev = mCryFilter.poll();
 			if(prev) {
 				mCryFilterCount--;
 			}
 		}
-		if(mCryFilterCount==4) {
+		if(mCryFilterCount>=6) {
 			if(mCryListener != null) {
 				mCryListener.onCryReceived();
 				mCryFilter.clear();

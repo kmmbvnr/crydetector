@@ -5,48 +5,6 @@
     android:background="@drawable/app_background"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="54dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/samples"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/samples"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="58dp"
-        android:text="@string/hits"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@+id/hits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/samples"
-        android:layout_alignBottom="@+id/samples"
-        android:layout_alignLeft="@+id/TextView01"
-        android:text="0"
-        android:textSize="70dp" />
-
-    <TextView
-        android:id="@+id/samples"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:layout_marginRight="19dp"
-        android:layout_marginTop="28dp"
-        android:text="0"
-        android:textSize="70dp" />
-
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
@@ -57,26 +15,26 @@
 
         <Button
             android:id="@+id/button_nocry1"
-            android:layout_height="wrap_content"
             android:layout_width="76dp"
+            android:layout_height="wrap_content"
             android:text="@string/nocry1" />
 
         <Button
             android:id="@+id/button_nocry2"
-            android:layout_height="wrap_content"
             android:layout_width="76dp"
+            android:layout_height="wrap_content"
             android:text="@string/nocry2" />
 
         <Button
             android:id="@+id/button_nocry3"
-            android:layout_height="wrap_content"
             android:layout_width="76dp"
+            android:layout_height="wrap_content"
             android:text="@string/nocry3" />
 
         <Button
             android:id="@+id/button_nocry4"
-            android:layout_height="wrap_content"
             android:layout_width="76dp"
+            android:layout_height="wrap_content"
             android:text="@string/nocry4" />
     </LinearLayout>
 
@@ -122,5 +80,45 @@
         android:layout_alignRight="@+id/linearLayout1"
         android:layout_marginBottom="36dp"
         android:text="@string/microphone" />
+
+    <TextView
+        android:id="@+id/hits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/button_mic"
+        android:layout_marginRight="91dp"
+        android:text="0"
+        android:textSize="65dp" />
+
+    <TextView
+        android:id="@+id/samples"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hits"
+        android:layout_below="@+id/hits"
+        android:layout_marginTop="29dp"
+        android:text="0"
+        android:textSize="65dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/samples"
+        android:layout_alignLeft="@+id/button_mic"
+        android:layout_marginBottom="27dp"
+        android:text="@string/samples"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/hits"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_marginBottom="25dp"
+        android:text="@string/hits"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
