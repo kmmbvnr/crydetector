@@ -5,6 +5,7 @@ import java.util.Queue;
 
 import android.media.audiofx.Visualizer;
 import android.media.audiofx.Visualizer.OnDataCaptureListener;
+import android.util.Log;
 
 public class CryDetector implements OnDataCaptureListener {
 	private static final int SAMPLES_SIZE = 128;
@@ -62,7 +63,7 @@ public class CryDetector implements OnDataCaptureListener {
 	public void unlink() {
 		if(mVisualizer != null) {			
 			mVisualizer.setEnabled(false);
-			mVisualizer.release();
+			//mVisualizer.release();
 			mVisualizer = null;
 			mCryFilter.clear();
 			mCryFilterCount = 0;
@@ -82,6 +83,16 @@ public class CryDetector implements OnDataCaptureListener {
 			}
 		}
 		
+		/*
+		StringBuilder builder = new StringBuilder("[");
+		for (int i = 0; i < mBytes.length; i++) {
+			builder.append(mBytes[i]);
+            if(i != mBytes.length-1) {
+		        builder.append(", ");
+            }
+		}		
+		Log.d("CRY_0", builder.toString());
+		*/
 		classityBytes();
 	}
 
@@ -103,13 +114,13 @@ public class CryDetector implements OnDataCaptureListener {
 		}
 		
 		mCryFilter.offer(sample);
-		if(mCryFilter.size() > 10) {
+		if(mCryFilter.size() > 7) {
 			Boolean prev = mCryFilter.poll();
 			if(prev) {
 				mCryFilterCount--;
 			}
 		}
-		if(mCryFilterCount>=6) {
+		if(mCryFilterCount>=5 && sample) {
 			if(mCryListener != null) {
 				mCryListener.onCryReceived();
 				mCryFilter.clear();

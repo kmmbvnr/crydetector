@@ -89,7 +89,7 @@
         android:layout_alignRight="@+id/button_mic"
         android:layout_marginRight="91dp"
         android:text="0"
-        android:textSize="65dp" />
+        android:textSize="60dp" />
 
     <TextView
         android:id="@+id/samples"
@@ -99,7 +99,7 @@
         android:layout_below="@+id/hits"
         android:layout_marginTop="29dp"
         android:text="0"
-        android:textSize="65dp" />
+        android:textSize="60dp" />
 
     <TextView
         android:id="@+id/textView2"

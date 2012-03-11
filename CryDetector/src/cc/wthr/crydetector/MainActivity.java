@@ -132,7 +132,7 @@ public class MainActivity extends Activity implements OnClickListener, ICryListe
 				mPlayer = null;
 				mCryDetector.unlink();
 				mp.stop();
-				mp.release();
+				//mp.release();
 			}
 		} catch(Throwable e) {
 			Log.d("MainActivity", "onCompletion", e);
