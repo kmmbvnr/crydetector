@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import android.media.MediaRecorder;
+import android.media.audiofx.Equalizer;
 import android.media.audiofx.Visualizer;
 import android.media.audiofx.Visualizer.OnDataCaptureListener;
 
@@ -44,6 +45,7 @@ public class CryDetector implements OnDataCaptureListener {
 	private Queue<Boolean> mCryFilter = new LinkedList<Boolean>();
 	private int mCryFilterCount = 0;
 	private MediaRecorder mRecorder;
+	private Equalizer mEqualizer;
 	
 	public CryDetector() {
 		mBytes = new byte[SAMPLES_SIZE];
@@ -70,6 +72,9 @@ public class CryDetector implements OnDataCaptureListener {
 				throw new RuntimeException(e);
 			}
 		}
+
+		mEqualizer = new Equalizer(0, sessionId);
+        mEqualizer.setEnabled(true);
 		
 		mVisualizer = new Visualizer(sessionId);
 		mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
@@ -84,6 +89,12 @@ public class CryDetector implements OnDataCaptureListener {
 			mVisualizer = null;
 			mCryFilter.clear();
 			mCryFilterCount = 0;
+		}
+		
+		if(mEqualizer != null) {
+			mEqualizer.setEnabled(false);
+			//mEqualizer.release()
+			mEqualizer = null;
 		}
         if (mRecorder != null) {
             mRecorder.stop();
