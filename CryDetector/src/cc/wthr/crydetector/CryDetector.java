@@ -3,9 +3,9 @@ package cc.wthr.crydetector;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import android.media.MediaRecorder;
 import android.media.audiofx.Visualizer;
 import android.media.audiofx.Visualizer.OnDataCaptureListener;
-import android.util.Log;
 
 public class CryDetector implements OnDataCaptureListener {
 	private static final int SAMPLES_SIZE = 128;
@@ -43,6 +43,7 @@ public class CryDetector implements OnDataCaptureListener {
 	private ICryListener mCryListener = null;
 	private Queue<Boolean> mCryFilter = new LinkedList<Boolean>();
 	private int mCryFilterCount = 0;
+	private MediaRecorder mRecorder;
 	
 	public CryDetector() {
 		mBytes = new byte[SAMPLES_SIZE];
@@ -54,6 +55,22 @@ public class CryDetector implements OnDataCaptureListener {
 	
 	public void link(int sessionId) {
 		unlink();
+		if(sessionId == 0) {
+			mRecorder = new MediaRecorder();
+			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			mRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+			mRecorder.setAudioChannels(1);
+			mRecorder.setAudioSamplingRate(8000);
+			mRecorder.setOutputFile("/dev/null");
+			try {
+				mRecorder.prepare();
+				mRecorder.start();
+			}  catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
 		mVisualizer = new Visualizer(sessionId);
 		mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
 		mVisualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate(), false, true);
@@ -68,6 +85,11 @@ public class CryDetector implements OnDataCaptureListener {
 			mCryFilter.clear();
 			mCryFilterCount = 0;
 		}
+        if (mRecorder != null) {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        }
 	}
 
 	public void onFftDataCapture(Visualizer visualizer, byte[] fft,
@@ -83,7 +105,7 @@ public class CryDetector implements OnDataCaptureListener {
 			}
 		}
 		
-		/*
+		
 		StringBuilder builder = new StringBuilder("[");
 		for (int i = 0; i < mBytes.length; i++) {
 			builder.append(mBytes[i]);
@@ -91,8 +113,8 @@ public class CryDetector implements OnDataCaptureListener {
 		        builder.append(", ");
             }
 		}		
-		Log.d("CRY_0", builder.toString());
-		*/
+		android.util.Log.d("CRY_0", builder.toString());
+		
 		classityBytes();
 	}
 
