@@ -72,7 +72,7 @@ public class CryDetector implements OnDataCaptureListener {
 				throw new RuntimeException(e);
 			}
 		}
-
+				
 		mEqualizer = new Equalizer(0, sessionId);
         mEqualizer.setEnabled(true);
 		
@@ -81,7 +81,7 @@ public class CryDetector implements OnDataCaptureListener {
 		mVisualizer.setDataCaptureListener(this, Visualizer.getMaxCaptureRate(), false, true);
 		mVisualizer.setEnabled(true);
 	}
-	
+
 	public void unlink() {
 		if(mVisualizer != null) {			
 			mVisualizer.setEnabled(false);

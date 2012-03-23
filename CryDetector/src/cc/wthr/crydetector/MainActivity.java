@@ -106,7 +106,7 @@ public class MainActivity extends Activity implements OnClickListener, ICryListe
 			try { 
 				mPlayer = MediaPlayer.create(this, soundId);
 				mCryDetector.link(mPlayer.getAudioSessionId());
-				mPlayer.setOnCompletionListener(this);
+				mPlayer.setOnCompletionListener(this);				
 				mPlayer.start();
 			} catch(Throwable e) {
 				Log.d("MainActivity", "Link visualizer error", e);	
